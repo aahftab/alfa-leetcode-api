@@ -5,6 +5,7 @@ import * as leetcode from './leetCode';
 import { FetchUserDataRequest } from './types';
 import apicache from 'apicache';
 import axios from 'axios';
+
 import {
   userContestRankingInfoQuery,
   discussCommentsQuery,
@@ -24,6 +25,16 @@ const API_URL = process.env.LEETCODE_API_URL || 'https://leetcode.com/graphql';
 const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   limit: 60,
+  skipFailedRequests: true,
+  skip: (req) => {
+    if(req.headers['limit_skip_token']){
+      console.log("token_header", req.headers['limit_skip_token'])
+      console.log("token_env", process.env.LIMIT_SKIP_TOKEN)
+      console.log(req.headers['limit_skip_token'] === process.env.LIMIT_SKIP_TOKEN)
+      return req.headers['limit_skip_token'] === process.env.LIMIT_SKIP_TOKEN}
+    else
+    return false
+  },
   standardHeaders: 'draft-7',
   legacyHeaders: false,
   message: 'Too many request from this IP, try again in 1 hour',
@@ -31,7 +42,7 @@ const limiter = rateLimit({
 
 app.use(cache('5 minutes'));
 app.use(cors()); //enable all CORS request
-app.use(limiter); //limit to all API
+app.use(limiter); //limit to all API except token
 app.use((req: express.Request, _res: Response, next: NextFunction) => {
   console.log('Requested URL:', req.originalUrl);
   next();

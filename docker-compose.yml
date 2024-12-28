@@ -11,7 +11,9 @@ services:
       - WDS_SOCKET_HOST=127.0.0.1 
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
+      - LIMIT_SKIP_TOKEN=aahftab
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: npm run dev
+    # command: npm run dev
+    command: node dist/index.js
