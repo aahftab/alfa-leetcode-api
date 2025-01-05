@@ -19,7 +19,7 @@ import {
 } from './GQLQueries/newQueries';
 
 const app = express();
-let cache = apicache.middleware;
+// let cache = apicache.middleware;
 const API_URL = process.env.LEETCODE_API_URL || 'https://leetcode.com/graphql';
 
 const limiter = rateLimit({
@@ -40,7 +40,7 @@ const limiter = rateLimit({
   message: 'Too many request from this IP, try again in 1 hour',
 });
 
-app.use(cache('5 minutes'));
+// app.use(cache('5 minutes'));
 app.use(cors()); //enable all CORS request
 app.use(limiter); //limit to all API except token
 app.use((req: express.Request, _res: Response, next: NextFunction) => {
